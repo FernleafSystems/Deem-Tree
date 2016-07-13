@@ -151,12 +151,26 @@ class WP_DeemTree {
 	}
 
 	/**
-	 * Look up the account ID from the options array
-	 *
 	 * @return string The domain name for this Deemtree account
 	 */
-	public function getDeemtreeDomain() {
+	public function getDeemtreeIframeDomain() {
 		return $this->getDeemtreeOption( 'domain_name' );
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDeemtreeIframeWidth() {
+		$sWidth = $this->getDeemtreeOption( 'iframe_width' );
+		return empty( $sWidth ) ? '100%' : $sWidth;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDeemtreeIframeHeight() {
+		$sHeight = $this->getDeemtreeOption( 'iframe_height' );
+		return empty( $sHeight ) ? '800px' : $sHeight;
 	}
 
 	/**
@@ -169,16 +183,16 @@ class WP_DeemTree {
 	 * @return string
 	 */
 	public function getDeemtreeIframe() {
-		$sDeemtreeDomain = $this->getDeemtreeDomain();
+		$sDeemtreeDomain = $this->getDeemtreeIframeDomain();
 		if ( empty( $sDeemtreeDomain ) ) {
 			$sFrame = 'Error: You must set your Deemtree domain in Settings -> Deemtree';
 		}
 		else {
 			$sFrame = sprintf(
 				'<iframe src="https://%s.deemtree.com" width="%s" height="%s" frameBorder="0" ></iframe>',
-				$this->getDeemtreeDomain(),
-				'100%',
-				'800px'
+				$this->getDeemtreeIframeDomain(),
+				$this->getDeemtreeIframeWidth(),
+				$this->getDeemtreeIframeHeight()
 			);
 		}
 		return $sFrame;
@@ -273,6 +287,20 @@ class WP_DeemTree {
 			$this->getNamespace(),
 			'deemtree_settings'
 		);
+		add_settings_field(
+			'deemtree_iframe_width',
+			'iFrame Width',
+			array( $this, 'admin_option_iframe_width' ),
+			$this->getNamespace(),
+			'deemtree_settings'
+		);
+		add_settings_field(
+			'deemtree_iframe_height',
+			'iFrame Height',
+			array( $this, 'admin_option_iframe_height' ),
+			$this->getNamespace(),
+			'deemtree_settings'
+		);
 
 		// We only register a single option since we use the validate_settings() to
 		// create the array of options later.
@@ -291,21 +319,46 @@ class WP_DeemTree {
 	 */
 	public function validate_settings( $aInput ) {
 		$aOptions = $this->getOptions();
-		if ( !empty( $aInput ) && !empty( $aInput['domain_name'] ) ) {
-			// Remove padded whitespace
-			$sDomainName = strtolower( trim( $aInput['domain_name'] ) );
-			if ( preg_match( '#[-a-z0-9]+$#', $sDomainName ) ) {
-				$aOptions['domain_name'] = $sDomainName;
+		if ( !empty( $aInput ) ) {
+
+			$sDomainName = '';
+			if ( !empty( $aInput['domain_name'] ) ) {
+				// Remove padded whitespace
+				$sDomainName = strtolower( trim( $aInput['domain_name'] ) );
+				if ( !preg_match( '#[-a-z0-9]+$#', $sDomainName ) ) {
+					$sDomainName = '';
+					add_settings_error( 'domain_name', $this->getNamespace() . '_domain_name_error', "Please enter a valid domain name", 'error' );
+				}
 			}
-			else {
-				add_settings_error( 'domain_name', $this->getNamespace() . '_domain_name_error', "Please enter a valid domain name", 'error' );
+			$aOptions[ 'domain_name' ] = $sDomainName;
+
+			$sIframeHeight = '';
+			if ( !empty( $aInput['iframe_height'] ) ) {
+				// Remove padded whitespace
+				$sIframeHeight = strtolower( trim( $aInput['iframe_height'] ) );
+				if ( !preg_match( '#[0-9]+(px|%){1}$#', $sIframeHeight ) ) {
+					$sIframeHeight = '';
+					add_settings_error( 'iframe_height', $this->getNamespace() . '_iframe_width_error', "Please enter a valid iFrame Height", 'error' );
+				}
 			}
+			$aOptions[ 'iframe_height' ] = $sIframeHeight;
+
+			$sIframeWidth = '';
+			if ( !empty( $aInput['iframe_width'] ) ) {
+				// Remove padded whitespace
+				$sIframeWidth = strtolower( trim( $aInput['iframe_width'] ) );
+				if ( !preg_match( '#[0-9]+(px|%){1}$#', $sIframeWidth ) ) {
+					$sIframeWidth = '';
+					add_settings_error( 'iframe_width', $this->getNamespace() . '_iframe_width_error', "Please enter a valid iFrame Width", 'error' );
+				}
+			}
+			$aOptions[ 'iframe_width' ] = $sIframeWidth;
+
 		}
 		return $aOptions;
 	}
 
 	/**
-	 * Output the input for the account ID option
 	 */
 	public function admin_option_domain_name() {
 		echo sprintf(
@@ -313,6 +366,27 @@ class WP_DeemTree {
 			sprintf( '%s[domain_name]', $this->getOptionsKey() ),
 			$this->getDeemtreeOption( 'domain_name' )
 		);
+	}
+
+	/**
+	 */
+	public function admin_option_iframe_width() {
+		echo sprintf(
+			'<input type="text" name="%s" size="10" value="%s">',
+			sprintf( '%s[iframe_width]', $this->getOptionsKey() ),
+			$this->getDeemtreeIframeWidth()
+			).'<div>Use "px" or "%". Leaving blank will default to "100%"</div>';
+	}
+
+	/**
+	 */
+	public function admin_option_iframe_height() {
+		echo sprintf(
+			'<input type="text" name="%s" size="10" value="%s">',
+			sprintf( '%s[iframe_height]', $this->getOptionsKey() ),
+			$this->getDeemtreeIframeHeight()
+			)
+			.'<div>Use "px" or "%". Leaving blank will default to "800px"</div>';
 	}
 
 	/**
