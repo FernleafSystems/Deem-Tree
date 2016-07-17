@@ -1,8 +1,13 @@
 /* Settings */
 
 #icon-options-deemtree {
-	background: transparent url(../images/plugin-icon-64.png) left top no-repeat;
+	background: transparent url( "../images/plugin-icon-64.png" ) left top no-repeat;
 	background-size: 32px;
+	height: 32px;
+	display: inline-block;
+	float: left;
+	width: 32px;
+	margin-right: 10px;
 }
 
 .deemtree-visit {
