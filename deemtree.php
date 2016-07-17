@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Class ICWP_DeemTree
+ *
+ * @package Deemtree
+ * @author Paul Goodchild <paul@icontrolwp.com>
+ * @version 1.0.0
+ */
 class ICWP_DeemTree {
 
 	/**

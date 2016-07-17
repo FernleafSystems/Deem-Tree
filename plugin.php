@@ -2,7 +2,7 @@
 /*
 Plugin Name: Deemtree, Voucher Marketing Made Easy
 Plugin URI: http://www.deemtree.com/?utm_source=wp-plugin&utm_medium=link&utm_campaign=plugins
-Description:
+Description: Sell your branded vouchers, gift cards, deals and offers from 0% Commission
 Version: 1.0.0
 Author: Deemtree
 Author URI: http://www.deemtree.com
