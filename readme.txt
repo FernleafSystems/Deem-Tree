@@ -4,7 +4,7 @@ Donate link: http://www.deemtree.com
 Tags: Vouchers, Gift Cards, Deals, Offers, E Commerce, Marketing
 Requires at least: 4.0
 Tested up to: 4.6
-Stable tag: 1.0
+Stable tag: 1.0.0
 License: GPLv3
 
 Sell your branded vouchers, gift cards, deals and offers online from 0% Commission. Sell via your Website, Facebook Page and Deemtree.com.
@@ -164,7 +164,7 @@ Deemtree uses Stripe as our payment partner. You can learn more about Stripe [he
 
 == Changelog ==
 
-= 1.0 =
+= 1.0.0 =
 
 * First Plugin Release.
 
